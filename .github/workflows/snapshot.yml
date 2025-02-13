@@ -8,7 +8,7 @@ name: OpenOCD Snapshot
 
 jobs:
   package:
-    runs-on: [ubuntu-20.04]
+    runs-on: [ubuntu-latest]
     env:
       DL_DIR: ../downloads
       BUILD_DIR: ../build
@@ -102,8 +102,8 @@ jobs:
           # add missing dlls
           cd $HOST-root/usr
           cp `$HOST-gcc --print-file-name=libwinpthread-1.dll` ./bin/
-          # required by libftdi1.dll. For the gcc-mingw-10.3.x or later "libgcc_s_dw2-1.dll" will need to be copied.
-          cp `$HOST-gcc --print-file-name=libgcc_s_sjlj-1.dll` ./bin/
+          # required by libftdi1.dll
+          cp `$HOST-gcc --print-file-name=libgcc_s_dw2-1.dll` ./bin/
           # prepare the artifact
           ARTIFACT="openocd-${OPENOCD_TAG}-${HOST}.tar.gz"
           tar -czf $ARTIFACT *
@@ -115,10 +115,7 @@ jobs:
         with:
           path: ${{ env.ARTIFACT_PATH }}
       - name: Delete 'latest' Release
-        uses: dev-drprasad/delete-tag-and-release@v1.1
-        with:
-          delete_release: true
-          tag_name: ${{ env.RELEASE_NAME }}
+        run: output=$(gh release delete "${{ env.RELEASE_NAME }}" --cleanup-tag --yes 2>&1) || [[ "${output}" == "release not found" ]]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
