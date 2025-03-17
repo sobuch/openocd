@@ -115,7 +115,9 @@ jobs:
         with:
           path: ${{ env.ARTIFACT_PATH }}
       - name: Delete 'latest' Release
-        run: output=$(gh release delete "${{ env.RELEASE_NAME }}" --cleanup-tag --yes 2>&1) || [[ "${output}" == "release not found" ]]
+        run: |
+          output=$(gh release delete "${{ env.RELEASE_NAME }}" --yes 2>&1) || [[ "${output}" == "release not found" ]]
+          gh api -X DELETE "repos/${{ github.repository }}/git/refs/tags/${{ env.RELEASE_NAME }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
