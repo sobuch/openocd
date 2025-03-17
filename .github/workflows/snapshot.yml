@@ -117,7 +117,7 @@ jobs:
       - name: Delete 'latest' Release
         run: |
           output=$(gh release delete "${{ env.RELEASE_NAME }}" --yes 2>&1) || [[ "${output}" == "release not found" ]]
-          gh api -X DELETE "repos/${{ github.repository }}/git/refs/tags/${{ env.RELEASE_NAME }}"
+          output=$(gh api -X DELETE "repos/${{ github.repository }}/git/refs/tags/${{ env.RELEASE_NAME }}  --silent" 2>&1) || [[ "${output}" == "gh: Reference does not exist (HTTP 422)" ]]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
