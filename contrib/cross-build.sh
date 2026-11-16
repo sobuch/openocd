@@ -138,6 +138,7 @@ if [ -d $LIBFTDI_SRC ] ; then
     ${LIBFTDI_SRC}/cmake/Toolchain-${HOST_TRIPLET}.cmake
 
   cmake $LIBFTDI_CONFIG \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -DCMAKE_TOOLCHAIN_FILE=${LIBFTDI_SRC}/cmake/Toolchain-${HOST_TRIPLET}.cmake \
     -DCMAKE_INSTALL_PREFIX=${PREFIX} \
     -DPKG_CONFIG_EXECUTABLE=`which pkg-config` \
